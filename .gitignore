@@ -1,0 +1,27 @@
+# Arquivos temporários ou de backup
+*~
+.*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Dependências e bibliotecas
+vendor/
+node_modules/
+
+# Arquivos gerados pelo seu IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Chaves privadas, senhas e arquivos de configuração
+config.yml
+secrets.yml
+*.key
+*.pem
+*.env
