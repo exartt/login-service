@@ -7,7 +7,7 @@ package tests
 //	"github.com/gofiber/fiber/v2"
 //	"golang.org/x/crypto/bcrypt"
 //	"gorm.io/gorm"
-//	"login-service/internal/usecase"
+//	"login-service/internal/handlers"
 //	"login-service/internal/domain/model"
 //	"login-service/internal/infrastructure"
 //	"net/http/httptest"
@@ -44,7 +44,7 @@ package tests
 //	mockCtx.Request = httptest.NewRequest("POST", "/signup", bytes.NewReader(bodyBytes))
 //
 //	// Execute a função Signup
-//	err = usecase.Signup(mockCtx)
+//	err = handlers.Signup(mockCtx)
 //
 //	// Verifique se a função não retornou um erro
 //	if err != nil {

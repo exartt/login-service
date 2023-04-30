@@ -5,13 +5,12 @@ import (
 )
 
 type User struct {
-	ID          uint      `gorm:"primaryKey"`
-	TenantID    uint      `gorm:"not null"`
-	Name        string    `gorm:"not null"`
-	Email       string    `gorm:"unique;not null"`
-	Password    string    `gorm:"not null"`
-	CreatedAt   time.Time `gorm:"not null"`
-	UpdatedAt   time.Time `gorm:"not null"`
-	IsActive    bool      `gorm:"not null"`
-	ProfileType string    `gorm:"not null"`
+	ID          uint   `gorm:"primary_key"`
+	Email       string `gorm:"unique;not null"`
+	Password    string `gorm:"not null"`
+	TenantID    uint   `gorm:"not null"`
+	IsActive    bool   `gorm:"default:true"`
+	ProfileType uint   `gorm:"default: 1"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }

@@ -1,7 +1,13 @@
+//	@title			Swagger Example API
+//	@version		1.0
+//	@description	This is a sample server celler server.
+//	@termsOfService	http://swagger.io/terms/
+
 package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	_ "login-service/docs"
 	"login-service/internal/delivery/http"
 	"login-service/internal/infrastructure"
 	"login-service/internal/infrastructure/database"
@@ -12,14 +18,10 @@ func init() {
 	pkg.LoadEnv()
 	infrastructure.ConnectDB()
 	database.Migrate()
-	http.Signup()
 }
 
 func main() {
 	app := fiber.New()
-	app.Get("/ping", func(c *fiber.Ctx) error {
-		return c.SendStatus(200)
-	})
-
+	http.RegisterRoutes(app)
 	app.Listen(":3020")
 }
