@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterRoutes(app *fiber.App) {
-	Signup(app)
+func InjectRoutes(app *fiber.App) {
+	LoginController(app)
 	Swagger(app)
 }

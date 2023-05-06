@@ -10,7 +10,6 @@ import (
 
 type UserService interface {
 	Signup(request *model.SignupRequest) error
-	// outros métodos, se houver
 }
 
 type userService struct {
@@ -58,6 +57,6 @@ func (s *userService) HashPassword(password string) (string, error) {
 	return string(hash), nil
 }
 
-func ParseRequestBody(c *fiber.Ctx, request *model.SignupRequest) error {
-	return c.BodyParser(request)
+func ParseRequestBody(c *fiber.Ctx, user *model.SignupRequest) error {
+	return c.BodyParser(user)
 }

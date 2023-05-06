@@ -9,13 +9,13 @@ import (
 
 func Signup(req services.UserService) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var request model.SignupRequest
+		request := new(model.SignupRequest)
 
-		if err := services.ParseRequestBody(c, &request); err != nil {
+		if err := services.ParseRequestBody(c, request); err != nil {
 			return respondWithError(c, http.StatusBadRequest, "failed to read body")
 		}
 
-		if err := req.Signup(&request); err != nil {
+		if err := req.Signup(request); err != nil {
 			return respondWithError(c, http.StatusBadRequest, "failed to create user")
 		}
 

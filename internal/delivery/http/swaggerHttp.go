@@ -2,9 +2,9 @@ package http
 
 import (
 	"github.com/gofiber/fiber/v2"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
+	"github.com/gofiber/swagger"
 )
 
 func Swagger(app *fiber.App) {
-	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+	app.Get("/swagger/*", swagger.HandlerDefault) // default
 }
