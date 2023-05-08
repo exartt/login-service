@@ -5,6 +5,6 @@ import (
 )
 
 func InjectRoutes(app *fiber.App) {
-	LoginController(app)
+	InitializerRoutes(app)
 	Swagger(app)
 }

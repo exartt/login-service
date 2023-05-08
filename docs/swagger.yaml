@@ -1,0 +1,103 @@
+basePath: /
+definitions:
+  model.SignupRequest:
+    properties:
+      email:
+        type: string
+      is_active:
+        type: boolean
+      password:
+        type: string
+      profile_type:
+        type: integer
+      tenant_id:
+        type: integer
+    type: object
+  model.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  utilsHTTP.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+host: localhost:3020
+info:
+  contact:
+    email: lmoraes1644cadastros@gmail.com
+    name: API Support
+  description: API de desenvolvimento do sistema Contador Psicologo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Contador Psicologo DEV
+  version: "1.0"
+paths:
+  /user/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return a JWT token
+      parameters:
+      - description: User Login
+        in: body
+        name: Login
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT Token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utilsHTTP.HTTPError'
+      tags:
+      - Users
+  /user/v1/signup:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Signup
+        in: body
+        name: Signup
+        required: true
+        schema:
+          $ref: '#/definitions/model.SignupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SignupRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utilsHTTP.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utilsHTTP.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utilsHTTP.HTTPError'
+      tags:
+      - Users
+swagger: "2.0"
