@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/sirupsen/logrus"
 	"login-service/config"
 	"login-service/internal/domain/model"
 	"login-service/internal/domain/services"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/sirupsen/logrus"
 )
 
 type UserHandler interface {
