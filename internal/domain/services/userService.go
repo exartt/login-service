@@ -1,14 +1,19 @@
 package services
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	_ "login-service/docs"
 	"login-service/internal/domain/model"
 	"login-service/internal/repositories"
+	"net/http"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -45,22 +50,51 @@ func (s *userService) Signup(request *model.SignupRequest) error {
 		ProfileType: request.ProfileType,
 	}
 
-	if err := s.CreateUser(&user, request.TenantID, request.IsActive, request.ProfileType); err != nil {
+	createdUser, err := s.CreateUser(&user, request.TenantID, request.IsActive, request.ProfileType)
+	if err != nil {
 		if strings.Contains(err.Error(), "duplicated key not allowed") {
 			return errors.New("email already exists")
 		}
 		return err
 	}
 
+	psychologist := model.UserCreate{
+		ID:               createdUser.ID,
+		Email:            createdUser.Email,
+		IsActive:         createdUser.IsActive,
+		ProfileType:      createdUser.ProfileType,
+		Name:             request.Name,
+		CellPhone:        request.CellPhone,
+		Phone:            request.Phone,
+		ZipCode:          request.ZipCode,
+		Address:          request.Address,
+		CPF:              request.CPF,
+		RG:               request.RG,
+		RegistrationDate: time.Now(),
+
+		Access:   request.Access,
+		TenantID: request.TenantID,
+
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	if err := createPsychologistInBeService(&psychologist); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (s *userService) CreateUser(user *model.User, tenantID uint, isActive bool, profileType uint) error {
+func (s *userService) CreateUser(user *model.User, tenantID uint, isActive bool, profileType uint) (*model.User, error) {
 	user.TenantID = tenantID
 	user.IsActive = isActive
 	user.ProfileType = profileType
 
-	return s.repo.Create(user)
+	if err := s.repo.Create(user); err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (s *userService) HashPassword(password string) (string, error) {
@@ -111,6 +145,51 @@ func validatePassword(password string) error {
 	if !hasUpper || !hasDigit || length < 8 {
 		Log.Error("password must have at least one uppercase letter, one number, and be at least 8 characters long")
 		return errors.New("invalid password")
+	}
+
+	return nil
+}
+
+func createPsychologistInBeService(userCreate *model.UserCreate) error {
+	psychologistData := map[string]interface{}{
+		// Fields from User
+		"userID":      userCreate.ID,
+		"email":       userCreate.Email,
+		"isActive":    userCreate.IsActive,
+		"profileType": userCreate.ProfileType,
+
+		// Fields from Person
+		"name":             userCreate.Name,
+		"cellPhone":        userCreate.CellPhone,
+		"phone":            userCreate.Phone,
+		"zipCode":          userCreate.ZipCode,
+		"address":          userCreate.Address,
+		"cpf":              userCreate.CPF,
+		"rg":               userCreate.RG,
+		"registrationDate": userCreate.RegistrationDate,
+
+		// Fields from Psychologist
+		"access":   userCreate.Access,
+		"tenantID": userCreate.TenantID,
+
+		// Common Fields
+		"createdAt": userCreate.CreatedAt,
+		"updatedAt": userCreate.UpdatedAt,
+	}
+
+	jsonData, err := json.Marshal(psychologistData)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.Post("http://localhost:3030/psychologist/v1/create-psychologist", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("Failed to create psychologist in be-service: %s", resp.Status)
 	}
 
 	return nil
