@@ -57,7 +57,7 @@ func Middleware(app *fiber.App) {
 func InitializerRoutes(app *fiber.App) {
 	SignupController(app)
 	LoginController(app)
-	Middleware(app)
+	//Middleware(app)
 }
 
 func provideUserService() services.UserService {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
 	_ "login-service/docs"
 	"login-service/internal/delivery/http"
@@ -29,6 +30,12 @@ func init() {
 // @BasePath /
 func main() {
 	app := fiber.New()
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:9000", // ou "*" para permitir todos
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept, Cookies, Cookie, Authorization",
+	}))
+
 	http.InjectRoutes(app)
 	log.Fatal(app.Listen(":3020"))
 }
